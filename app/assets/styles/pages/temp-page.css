@@ -1,0 +1,23 @@
+.temp-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.temp-kicker {
+  margin: 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--link-color);
+}
+
+h1 {
+  margin: 1rem 0 0;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+}
