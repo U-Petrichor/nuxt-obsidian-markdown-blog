@@ -20,44 +20,89 @@ const flattenLinks = (links: TocLink[] = []): TocLink[] => {
 const flatLinks = computed(() => flattenLinks(props.links || []))
 const activeId = ref('')
 
-const updateActiveId = () => {
+let observer: IntersectionObserver | null = null
+// 新增：用于记录重试的定时器，防止用户快速来回切换导致内存泄漏
+let retryTimeout: ReturnType<typeof setTimeout> | null = null 
+
+// 新增参数 retryCount，限制最大重试次数，防止死循环
+const setupObserver = (retryCount = 0) => {
+  // 1. 清理上一次可能遗留的重试任务
+  if (retryTimeout) {
+    clearTimeout(retryTimeout)
+    retryTimeout = null
+  }
+
+  // 2. 清理旧的观察器
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
+
   if (!import.meta.client || !flatLinks.value.length) {
     return
   }
 
-  let nextActiveId = flatLinks.value[0]?.id || ''
+  activeId.value = flatLinks.value[0]?.id || ''
 
-  for (const link of flatLinks.value) {
-    const element = document.getElementById(link.id || '')
+  // 3. 创建新的观察器
+  observer = new IntersectionObserver(
+    (entries) => {
+      // 收集当前进入视口的所有标题
+      const intersecting = entries.filter(e => e.isIntersecting).map(e => e.target.id)
 
-    if (!element) {
-      continue
+      if (intersecting.length > 0) {
+        // 按照目录原本的顺序，挑出第一个出现的标题
+        const first = flatLinks.value.find(link => link.id && intersecting.includes(link.id))
+        if (first?.id) {
+          activeId.value = first.id
+        }
+      }
+    },
+    {
+      rootMargin: '-80px 0px -80% 0px',
+      threshold: 0,
+    },
+  )
+
+  let missingElements = false
+
+  // 4. 开始绑定 DOM 元素
+  flatLinks.value.forEach(link => {
+    const el = document.getElementById(link.id || '')
+    if (el) {
+      observer!.observe(el)
+    } else {
+      missingElements = true // 发现有标题还没渲染出来！
     }
+  })
 
-    if (element.getBoundingClientRect().top <= 180) {
-      nextActiveId = link.id || nextActiveId
-    }
+  // 5. 核心修复逻辑：延迟重试机制
+  // 如果发现有元素丢失，并且重试次数小于 4 次（最多等 400ms）
+  if (missingElements && retryCount < 4) {
+    console.warn(`[TOC] 标题 DOM 未就绪，100ms 后进行第 ${retryCount + 1} 次重试...`)
+    retryTimeout = setTimeout(() => {
+      setupObserver(retryCount + 1) // 递归重试
+    }, 100)
   }
-
-  activeId.value = nextActiveId
 }
 
+// 首次挂载时执行
 onMounted(() => {
-  updateActiveId()
-  window.addEventListener('scroll', updateActiveId, { passive: true })
+  setupObserver()
 })
 
-watch(flatLinks, async () => {
-  await nextTick()
-  updateActiveId()
-})
+// 当目录数据（即系列内的文章）发生切换时执行
+watch(flatLinks, () => {
+  setupObserver()
+}, { flush: 'post' })
+
+const scrollToHeading = (id: string) => {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+}
 
 onBeforeUnmount(() => {
-  if (!import.meta.client) {
-    return
-  }
-
-  window.removeEventListener('scroll', updateActiveId)
+  observer?.disconnect()
+  observer = null
 })
 </script>
 
@@ -77,6 +122,7 @@ onBeforeUnmount(() => {
         :href="`#${link.id}`"
         class="progress-link"
         :class="{ active: link.id === activeId }"
+        @click.prevent="scrollToHeading(link.id || '')"
       >
         <span class="progress-dot" />
         <span>{{ link.text }}</span>

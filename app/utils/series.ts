@@ -1,153 +1,184 @@
-export type SeriesNavItem = {
-  title: string
-  path?: string
-  children?: SeriesNavItem[]
+import { queryCollection } from '#imports'
+import type {
+  SeriesRoot,
+  SeriesArticle,
+  StandaloneArticle,
+} from '../types/content'
+
+// =====================
+// 路由定义
+// =====================
+const ROUTES = {
+  SERIES: '/series',
+  POST: '/post',
 }
 
-export type SeriesConfig = {
-  key: 'series-a' | 'series-b'
-  name: string
-  basePath: '/series-a' | '/series-b'
-  tagline: string
-  navTitle: string
-  summary: string
-  accentClass: string
-  sidebarItems: SeriesNavItem[]
+export function buildSeriesRoute(series: string, slug?: string) {
+  return slug
+    ? `${ROUTES.SERIES}/${series}/${slug}`
+    : `${ROUTES.SERIES}/${series}`
 }
 
+export function buildPostRoute(slug: string) {
+  return `${ROUTES.POST}/${slug}`
+}
+
+// =====================
+// 首页卡片类型
+// =====================
 export type HomeArticleCard = {
   kind: 'series' | 'standalone'
-  badge: string
   title: string
-  description: string
+  description?: string
   to: string
   icon: string
   theme: string
+  // Optional: when set, the card cover uses this image instead of the theme gradient.
+  coverImage?: string
 }
 
-export const seriesConfigs: SeriesConfig[] = [
-  {
-    key: 'series-a',
-    name: '系列 A',
-    basePath: '/series-a',
-    tagline: '偏产品说明与组件规范，适合沉淀结构化参考文档。',
-    navTitle: '系列 A 导航',
-    summary: '适合放设计规范、组件说明、接口约束这一类需要严谨结构的资料。',
-    accentClass: 'series-a',
-    sidebarItems: [
-      {
-        title: '基础文档',
-        children: [
-          {
-            title: '总览',
-            path: '/series-a/overview',
-          },
-          {
-            title: '组件规范',
-            path: '/series-a/component-spec',
-          },
-          {
-            title: '分析样本编写追踪器',
-            path: '/series-a/analysis-tracker',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    key: 'series-b',
-    name: '系列 B',
-    basePath: '/series-b',
-    tagline: '偏研究记录与方法沉淀，适合更灵活的专题化内容。',
-    navTitle: '系列 B 导航',
-    summary: '适合放项目复盘、技术专题、研究记录等更具探索感的内容。',
-    accentClass: 'series-b',
-    sidebarItems: [
-      {
-        title: '专题内容',
-        children: [
-          {
-            title: '快速开始',
-            path: '/series-b/getting-started',
-          },
-          {
-            title: '规划路线',
-            path: '/series-b/roadmap',
-          },
-        ],
-      },
-    ],
-  },
-]
+// =====================
+// Sidebar 类型
+// =====================
+export type SeriesNavItem =
+  | { title: string; path: string }
+  | { title: string; children: { title: string; path: string }[] }
 
-export const featuredSeriesArticles: HomeArticleCard[] = [
-  {
-    kind: 'series',
-    badge: 'Series A',
-    title: '系列 A · 总览',
-    description: '直接进入系列 A 的第一篇文章，阅读时保留左侧导航与系列化结构。',
-    to: '/series-a/overview',
-    icon: '🧩',
-    theme: 'theme-blue',
-  },
-  {
-    kind: 'series',
-    badge: 'Series B',
-    title: '系列 B · 快速开始',
-    description: '直接进入系列 B 的专题文章，保留系列导航，但视觉氛围与系列 A 区分开。',
-    to: '/series-b/getting-started',
-    icon: '🌌',
-    theme: 'theme-purple',
-  },
-]
+// =====================
+// 映射函数
+// =====================
+const mapSeriesRootToCard = (root: SeriesRoot): HomeArticleCard => ({
+  kind: 'series',
+  title: root.title,
+  description: root.description,
+  to: buildSeriesRoute(root.series),
+  icon: root.icon ?? '📚',
+  theme: root.theme ?? 'theme-default',
+  coverImage: root.coverImage,
+})
 
-export const standaloneArticles: HomeArticleCard[] = [
-  {
-    kind: 'standalone',
-    badge: 'Single',
-    title: '关于这个站点',
-    description: '一篇独立文章，不挂载系列侧边栏，进入后直接阅读正文。',
-    to: '/about',
-    icon: '🌿',
-    theme: 'theme-emerald',
-  },
-  {
-    kind: 'standalone',
-    badge: 'Single',
-    title: '如何开始整理 Markdown',
-    description: '以单篇文章形式沉淀方法论，不需要系列导航即可独立阅读。',
-    to: '/guide/getting-started',
-    icon: '🪄',
-    theme: 'theme-amber',
-  },
-]
+const mapStandaloneToCard = (
+  article: StandaloneArticle,
+): HomeArticleCard => ({
+  kind: 'standalone',
+  title: article.title,
+  description: article.description,
+  to: buildPostRoute(article.slug),
+  icon: article.icon ?? '📝',
+  theme: article.theme ?? 'theme-default',
+  coverImage: article.coverImage,
+})
 
-export function getSeriesByPath(path: string) {
-  return seriesConfigs.find(series => path === series.basePath || path.startsWith(`${series.basePath}/`))
+// =====================
+// Sidebar 构建
+// =====================
+const buildSidebar = (
+  root: SeriesRoot,
+  articles: SeriesArticle[],
+): SeriesNavItem[] => {
+  const grouped = new Map<string, SeriesArticle[]>()
+
+  for (const article of articles) {
+    const group = article.category || '未分类'
+    const list = grouped.get(group) || []
+    list.push(article)
+    grouped.set(group, list)
+  }
+
+  return [
+    {
+      title: root.title,
+      path: buildSeriesRoute(root.series),
+    },
+    ...Array.from(grouped.entries()).map(([group, list]) => ({
+      title: group,
+      children: list
+        .sort((a, b) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
+        .map((a) => ({
+          title: a.title,
+          path: buildSeriesRoute(a.series, a.slug),
+        })),
+    })),
+  ]
 }
 
-export function findSeriesNavItemByPath(path: string) {
-  const walk = (items: SeriesNavItem[]): SeriesNavItem | undefined => {
-    for (const item of items) {
-      if (item.path === path) {
-        return item
-      }
+// =====================
+// 数据查询
+// =====================
+async function getAllContent() {
+  return await queryCollection('content').all()
+}
 
-      if (item.children?.length) {
-        const match = walk(item.children)
+// =====================
+// 首页数据
+// =====================
+export async function getHomePageArticles() {
+  const data = await getAllContent()
 
-        if (match) {
-          return match
-        }
-      }
-    }
+  const seriesRoots = data
+    .filter((d) => d.kind === 'series-root' && d.isFeatured)
+    .map((d) => d as SeriesRoot)
+
+  const standalone = data
+    .filter((d) => d.kind === 'standalone' && d.isFeatured)
+    .map((d) => d as StandaloneArticle)
+
+  return {
+    featuredSeries: seriesRoots.map(mapSeriesRootToCard),
+    featuredStandalone: standalone.map(mapStandaloneToCard),
   }
+}
 
-  for (const series of seriesConfigs) {
-    const match = walk(series.sidebarItems)
+export async function getHomeArticleCards() {
+  const { featuredSeries } = await getHomePageArticles()
+  return featuredSeries
+}
 
-    if (match) {
-      return match
-    }
+export async function getStandaloneArticleCards() {
+  const { featuredStandalone } = await getHomePageArticles()
+  return featuredStandalone
+}
+
+// =====================
+// 系列相关
+// =====================
+export type SeriesConfig = {
+  key: string
+  title: string
+  description?: string
+  icon: string
+  theme: string
+  sidebar: SeriesNavItem[]
+}
+
+export async function getSeries(seriesKey: string): Promise<SeriesConfig | null> {
+  const data = await getAllContent()
+
+  const root = data.find(
+    (d) => d.kind === 'series-root' && d.series === seriesKey,
+  ) as SeriesRoot | undefined
+
+  if (!root) return null
+
+  const articles = data
+    .filter((d) => d.kind === 'series' && d.series === seriesKey)
+    .map((d) => d as SeriesArticle)
+    .sort((a, b) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
+
+  return {
+    key: seriesKey,
+    title: root.title,
+    description: root.description,
+    icon: root.icon ?? '📚',
+    theme: root.theme ?? 'theme-default',
+    sidebar: buildSidebar(root, articles),
   }
+}
+
+// =====================
+// Sidebar 单独获取
+// =====================
+export async function getSeriesSidebarItems(seriesKey: string) {
+  const series = await getSeries(seriesKey)
+  return series?.sidebar || []
 }

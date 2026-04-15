@@ -1,13 +1,26 @@
 <script setup lang="ts">
 import type { HomeArticleCard } from '~/utils/series'
 
-/**
- * 首页展示组件，负责渲染首屏 Logo、系列文章入口和独立文章入口。
- */
 defineProps<{
   featuredSeriesArticles: HomeArticleCard[]
   standaloneArticles: HomeArticleCard[]
 }>()
+
+// ✅ 新增：UI层派生 badge
+const getBadge = (kind: HomeArticleCard['kind']) => {
+  return kind === 'series' ? 'Series' : 'Article'
+}
+
+// Build an inline style for the card cover.
+// When a coverImage is provided it takes precedence over the theme gradient class.
+const getCoverStyle = (card: HomeArticleCard): Record<string, string> => {
+  if (!card.coverImage) return {}
+  return {
+    backgroundImage: `url(${card.coverImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }
+}
 </script>
 
 <template>
@@ -42,7 +55,7 @@ defineProps<{
         </p>
       </div>
 
-      <section class="content-block">
+      <section v-if="featuredSeriesArticles.length" class="content-block">
         <div class="section-heading">
           <p class="section-kicker">
             系列文章
@@ -59,8 +72,9 @@ defineProps<{
             :class="card.theme"
             :style="{ animationDelay: `${index * 120}ms` }"
           >
-            <div class="card-cover">
-              <span class="card-badge">{{ card.badge }}</span>
+            <div class="card-cover" :style="getCoverStyle(card)">
+              <!-- ✅ 修复点 -->
+              <span class="card-badge">{{ getBadge(card.kind) }}</span>
               <span class="card-icon">{{ card.icon }}</span>
             </div>
 
@@ -90,8 +104,9 @@ defineProps<{
             :class="card.theme"
             :style="{ animationDelay: `${(index + featuredSeriesArticles.length) * 120}ms` }"
           >
-            <div class="card-cover">
-              <span class="card-badge">{{ card.badge }}</span>
+            <div class="card-cover" :style="getCoverStyle(card)">
+              <!-- ✅ 修复点 -->
+              <span class="card-badge">{{ getBadge(card.kind) }}</span>
               <span class="card-icon">{{ card.icon }}</span>
             </div>
 

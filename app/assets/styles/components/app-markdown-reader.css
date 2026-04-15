@@ -1,0 +1,116 @@
+.markdown-container {
+  min-height: 320px;
+}
+
+/* ── Loading ── */
+.markdown-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--link-color);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ── Empty ── */
+.markdown-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.empty-container {
+  text-align: center;
+  max-width: 320px;
+}
+
+.empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.empty-message {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ── Error ── */
+.markdown-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.error-container {
+  text-align: center;
+  max-width: 380px;
+}
+
+.error-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.error-message {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.error-details {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--inline-code-bg);
+  color: var(--inline-code-color);
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  font-family: "Cascadia Code", "Fira Code", monospace;
+  text-align: left;
+  word-break: break-all;
+}
+
+.retry-button {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background: var(--header-hover);
+  border-color: var(--link-color);
+}

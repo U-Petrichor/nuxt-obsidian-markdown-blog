@@ -1,233 +1,79 @@
 <script setup lang="ts">
-import faviconUrl from '~/assets/icons/favicon.ico'
-import fontUrl from '~/assets/fonts/ZLabsRoundPix.woff2'
-import { useArticleProgressState } from '~/composables/useArticleProgressState'
-import { getSeriesByPath } from '~/utils/series'
+import faviconUrl from '~/assets/icons/favicon.ico' // 导入网站图标路径
+import fontUrl from '~/assets/fonts/ZLabsRoundPix.woff2' // 导入自定义像素字体路径
 
-const route = useRoute()
-const themeMode = useState<'light' | 'dark'>('theme-mode', () => 'dark')
-const { articleProgress, resetArticleProgress } = useArticleProgressState()
-const fontReady = useState('font-ready', () => false)
-const isCompactSidebar = ref(false)
-const isSidebarDrawerOpen = ref(false)
-const isHomePage = computed(() => route.path === '/')
-const isMarkdownRoute = computed(() => {
-  const slug = route.params.slug
-
-  return Array.isArray(slug) ? slug.length > 0 : typeof slug === 'string' && slug.length > 0
-})
-const currentSeries = computed(() => getSeriesByPath(route.path))
-const shouldUseDocsLayout = computed(() => !isHomePage.value)
-const hasArticleProgress = computed(() => articleProgress.value.path === route.path && Boolean(articleProgress.value.links?.length))
-const shouldReserveRightSidebar = computed(() => shouldUseDocsLayout.value && isMarkdownRoute.value)
-const showSidebarToggle = computed(() => Boolean(currentSeries.value))
-
-const applyTheme = (mode: 'light' | 'dark') => {
-  if (!import.meta.client) {
-    return
-  }
-
-  document.documentElement.dataset.theme = mode
-}
-
-const toggleTheme = () => {
-  themeMode.value = themeMode.value === 'light' ? 'dark' : 'light'
-}
-
-const updateSidebarMode = () => {
-  if (!import.meta.client) {
-    return
-  }
-
-  isCompactSidebar.value = window.innerWidth <= 1320
-  if (!isCompactSidebar.value) {
-    isSidebarDrawerOpen.value = false
-  }
-}
-
-const toggleSidebarDrawer = () => {
-  isSidebarDrawerOpen.value = !isSidebarDrawerOpen.value
-}
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme-mode')
-  const htmlElement = window.document.documentElement
-
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    themeMode.value = savedTheme
-  }
-
-  applyTheme(themeMode.value)
-
-  if ('fonts' in document) {
-    document.fonts.load('1em "ZLabsRoundPix"').finally(() => {
-      fontReady.value = true
-      htmlElement.dataset.fontReady = 'true'
-    })
-  }
-  else {
-    fontReady.value = true
-    htmlElement.dataset.fontReady = 'true'
-  }
-
-  updateSidebarMode()
-  window.addEventListener('resize', updateSidebarMode, { passive: true })
-})
-
-watch(() => route.path, () => {
-  isSidebarDrawerOpen.value = false
-  resetArticleProgress()
-})
-
-watch(themeMode, (mode) => {
-  if (!import.meta.client) {
-    return
-  }
-
-  localStorage.setItem('theme-mode', mode)
-  applyTheme(mode)
-})
-
-onBeforeUnmount(() => {
-  if (!import.meta.client) {
-    return
-  }
-
-  window.removeEventListener('resize', updateSidebarMode)
-})
-
+// 设置 SEO 元数据
 useSeoMeta({
   titleTemplate: title => title ? `${title} · Petrichor` : 'Petrichor',
-  description: '一个兼顾首页展示与 Markdown 文档沉淀的 Nuxt 站点。',
+  description: '采用Nuxt4+Vue3搭建的个人博客网站，高度支持客制化',
 })
 
+/**
+ * 使用 Nuxt 全局状态管理字体加载情况。
+ * 使用 useState 确保服务器渲染（SSR）和客户端激活（Hydration）之间的状态一致。
+ */
+const fontReady = useState('font-ready', () => false)
+
+
+// 向 <head> 注入全局资源和初始化脚本
 useHead({
   link: [
-    {
-      rel: 'icon',
-      href: faviconUrl,
-    },
-    {
-      rel: 'preload',
-      href: fontUrl,
-      as: 'font',
-      type: 'font/woff2',
-      crossorigin: '',
-    },
+    { rel: 'icon', href: faviconUrl },
+    // 预加载字体以提升加载优先级
+    { rel: 'preload', href: fontUrl, as: 'font', type: 'font/woff2', crossorigin: '' },
   ],
   script: [
     {
       key: 'theme-init',
+      // 页面加载瞬间执行：从 localStorage 读取主题，防止主题颜色闪烁
       innerHTML: `
         try {
           const savedTheme = localStorage.getItem('theme-mode')
           document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark'
-        }
-        catch {
-          document.documentElement.dataset.theme = 'dark'
-        }
+        } catch {}
       `,
+      tagPosition: 'head',
     },
     {
       key: 'font-init',
+      // 初始化状态：默认隐藏内容。
+      // 显性展示逻辑（dataset.fontReady = 'true'）交给上方的 onMounted 处理，
+      // 以确保在内容显示前，Vue 已经完全接管了 DOM。
       innerHTML: `
         document.documentElement.dataset.fontReady = 'false'
-        if (document.fonts && document.fonts.load) {
-          document.fonts.load('1em "ZLabsRoundPix"').finally(function () {
-            document.documentElement.dataset.fontReady = 'true'
-          })
-        } else {
-          document.documentElement.dataset.fontReady = 'true'
-        }
       `,
+      tagPosition: 'head',
     },
   ],
+})
+
+/**
+ * 核心逻辑：解决字体加载导致的布局闪烁（FOUC）
+ */
+onMounted(async () => {
+  // 等待文档中引用的所有字体完成加载。
+  // document.fonts.ready 返回一个 Promise，当浏览器完成所有 @font-face 资源加载后 resolve。
+  if (document.fonts?.ready) {
+    await document.fonts.ready
+  }
+
+  // 关键点：将逻辑放在 onMounted 内部执行。
+  // 这确保了 Vue 已经完成了首次渲染和客户端激活（Hydration）。
+  // 只有在 Vue 挂载完成后才将 fontReady 设为 true，从而显示主体内容。
+  // 这样可以彻底消除因字体从缓存读取过快，导致在 Vue 激活前就显示了“破碎布局”的问题。
+  document.documentElement.dataset.fontReady = 'true'
+  fontReady.value = true
 })
 </script>
 
 <template>
   <NuxtRouteAnnouncer />
-  <div class="app-shell" :class="[currentSeries?.accentClass, { 'font-ready': fontReady }]">
-    <AppHeader
-      :route-path="route.path"
-      :current-series="currentSeries"
-      :should-use-docs-layout="shouldUseDocsLayout"
-      :theme-mode="themeMode"
-      @toggle-theme="toggleTheme"
-    />
 
-    <main v-if="!shouldUseDocsLayout" class="page-main">
+  <div class="app-shell" :class="{ 'font-ready': fontReady }">
+    <AppHeader />
+    <NuxtLayout>
       <NuxtPage />
-    </main>
-
-    <template v-else>
-      <button
-        v-if="showSidebarToggle"
-        class="sidebar-toggle"
-        :class="{ compact: isCompactSidebar, open: isSidebarDrawerOpen }"
-        type="button"
-        @click="toggleSidebarDrawer"
-      >
-        {{ isSidebarDrawerOpen ? '‹' : '›' }}
-      </button>
-
-      <div
-        v-if="showSidebarToggle"
-        class="sidebar-backdrop"
-        :class="{ visible: isCompactSidebar && isSidebarDrawerOpen }"
-        @click="isSidebarDrawerOpen = false"
-      />
-
-      <div
-        class="app-layout"
-        :class="{
-          'has-left-sidebar': !!currentSeries,
-          'has-right-sidebar': shouldReserveRightSidebar,
-          'sidebar-compact-mode': !!currentSeries && isCompactSidebar,
-        }"
-      >
-        <aside
-          v-if="currentSeries"
-          class="sidebar"
-          :class="{
-            compact: isCompactSidebar,
-            open: isSidebarDrawerOpen,
-          }"
-        >
-          <p class="sidebar-kicker">
-            {{ currentSeries.name }}
-          </p>
-          <p class="sidebar-title">
-            {{ currentSeries.navTitle }}
-          </p>
-          <p class="sidebar-summary">
-            {{ currentSeries.summary }}
-          </p>
-          <DocsNav
-            :items="currentSeries.sidebarItems"
-            :current-path="route.path"
-          />
-        </aside>
-
-        <main class="content-area" :class="{ 'without-sidebar': !currentSeries }">
-          <NuxtPage />
-        </main>
-
-        <AppRightSidebar
-          v-if="shouldReserveRightSidebar"
-          class="progress-sidebar"
-          :class="{ empty: !hasArticleProgress }"
-        >
-          <AppArticleProgress
-            :title="articleProgress.title"
-            :links="articleProgress.links"
-          />
-        </AppRightSidebar>
-      </div>
-    </template>
-
+    </NuxtLayout>
     <AppFooter />
   </div>
 </template>
-
-<style src="~/assets/styles/app.css"></style>

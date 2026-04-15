@@ -1,6 +1,11 @@
 ---
 title: 关于这个站点
 description: 一个适合承载大量 Markdown 参考文档的 Nuxt 站点雏形。
+kind: standalone
+slug: about
+isFeatured: true
+icon: "🌿"
+theme: theme-emerald
 ---
 
 # 关于这个站点
@@ -21,5 +26,5 @@ description: 一个适合承载大量 Markdown 参考文档的 Nuxt 站点雏形
 
 ## 回到首页
 
-- [返回系列 A 总览](/series-a/overview)
+- [进入博客设置系列](/series/blog-settings)
 - [回到站点首页](/)
