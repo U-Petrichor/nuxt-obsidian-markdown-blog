@@ -5,7 +5,7 @@ slug: series-article
 title: 系列文章
 description: 完整讲解如何在数据驱动架构中新建系列、配置 Frontmatter，以及首页卡片 "Series" 徽章的触发机制。
 category: 发布文章
-navOrder: 1
+navOrder: 2
 ---
 
 # 如何发布系列文章

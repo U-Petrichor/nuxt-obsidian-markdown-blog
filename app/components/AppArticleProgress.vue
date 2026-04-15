@@ -2,6 +2,7 @@
 type TocLink = {
   id?: string
   text?: string
+  depth?: number
   children?: TocLink[]
 }
 
@@ -121,7 +122,7 @@ onBeforeUnmount(() => {
         :key="link.id"
         :href="`#${link.id}`"
         class="progress-link"
-        :class="{ active: link.id === activeId }"
+        :class="[{ active: link.id === activeId }, `depth-${link.depth ?? 2}`]"
         @click.prevent="scrollToHeading(link.id || '')"
       >
         <span class="progress-dot" />

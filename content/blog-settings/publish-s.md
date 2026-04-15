@@ -4,7 +4,7 @@ series: blog-settings
 slug: stand-alone-article
 title: 独立文章
 category: 发布文章
-navOrder: 2
+navOrder: 3
 ---
 
 # 发布独立文章

@@ -47,7 +47,9 @@ const isDev = import.meta.dev
 
     <!-- content -->
     <div v-else class="markdown-container">
-      <ContentRenderer :value="props.page" />
+      <div class="app-markdown-reader">
+        <ContentRenderer :value="props.page" />
+      </div>
     </div>
 
     <!-- error -->

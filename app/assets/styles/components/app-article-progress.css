@@ -50,3 +50,30 @@
   background: var(--link-color);
   box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.12);
 }
+
+/* ── Depth-based indentation ── */
+/* depth-1 (h1) — top-level, no indent */
+.progress-link.depth-1 {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* depth-2 (h2) — base level */
+.progress-link.depth-2 {
+  font-size: 0.85rem;
+}
+
+/* depth-3 (h3) — one level in */
+.progress-link.depth-3 {
+  padding-left: 1.25rem;
+  font-size: 0.8rem;
+}
+
+/* depth-4+ (h4 and deeper) — two levels in */
+.progress-link.depth-4,
+.progress-link.depth-5,
+.progress-link.depth-6 {
+  padding-left: 2rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}

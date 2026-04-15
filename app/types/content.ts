@@ -35,6 +35,7 @@ export type ContentDocument =
 export type TocLink = {
   id?: string
   text?: string
+  depth?: number
   children?: TocLink[]
 }
 
