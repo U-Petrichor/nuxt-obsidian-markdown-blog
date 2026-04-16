@@ -28,6 +28,8 @@ pnpm-lock.yaml
 # prompt
 task.md
 
-# Content directory - ignore everything except blog-settings
-content/
+# 忽略 content 文件夹下的所有内容
+content/*
+
+# 但是不要忽略 content/blog-settings 文件夹
 !content/blog-settings/
