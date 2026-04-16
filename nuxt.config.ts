@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
+    './modules/obsidian-callout.ts',
   ],
   css: [
     '~/assets/styles/global.css',
