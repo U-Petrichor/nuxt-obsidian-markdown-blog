@@ -27,3 +27,7 @@ pnpm-lock.yaml
 
 # prompt
 task.md
+
+# Content directory - ignore everything except blog-settings
+content/
+!content/blog-settings/
