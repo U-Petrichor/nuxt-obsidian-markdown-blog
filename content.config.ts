@@ -11,9 +11,7 @@ export default defineContentConfig({
         // =====================
         title: z.string().min(1),
         description: z.string().optional(),
-
         kind: z.enum(['standalone', 'series', 'series-root']),
-
         isFeatured: z.boolean().default(false),
         theme: z.string().default('theme-default'),
 
