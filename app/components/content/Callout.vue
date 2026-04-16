@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { calloutIconMap } from '~/components/icon/calloutIcon'
+
 const props = defineProps<{
   type?: string
   title?: string
@@ -9,45 +11,46 @@ const isOpen = ref(true)
 interface CalloutStyle {
   bg: string
   border: string
-  icon: string
 }
 
 const DEFAULT_STYLE: CalloutStyle = {
   bg: 'var(--md-callout-info-bg)',
   border: 'var(--md-callout-info-border)',
-  icon: 'ℹ',
 }
 
 const typeMap: Record<string, CalloutStyle> = {
-  info:    { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)',    icon: 'ℹ' },
-  tip:     { bg: 'var(--md-callout-success-bg)', border: 'var(--md-callout-success-border)', icon: '💡' },
-  note:    { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)',    icon: '📝' },
-  warning: { bg: 'var(--md-callout-warning-bg)', border: 'var(--md-callout-warning-border)', icon: '⚠' },
-  caution: { bg: 'var(--md-callout-warning-bg)', border: 'var(--md-callout-warning-border)', icon: '⚠' },
-  danger:  { bg: 'var(--md-callout-danger-bg)',  border: 'var(--md-callout-danger-border)',  icon: '✖' },
-  error:   { bg: 'var(--md-callout-danger-bg)',  border: 'var(--md-callout-danger-border)',  icon: '✖' },
-  success: { bg: 'var(--md-callout-success-bg)', border: 'var(--md-callout-success-border)', icon: '✓' },
+  info:      { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)' },
+  tip:       { bg: 'var(--md-callout-success-bg)', border: 'var(--md-callout-success-border)' },
+  note:      { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)' },
+  warning:   { bg: 'var(--md-callout-warning-bg)', border: 'var(--md-callout-warning-border)' },
+  caution:   { bg: 'var(--md-callout-warning-bg)', border: 'var(--md-callout-warning-border)' },
+  important: { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)' },
+  danger:    { bg: 'var(--md-callout-danger-bg)',  border: 'var(--md-callout-danger-border)' },
+  error:     { bg: 'var(--md-callout-danger-bg)',  border: 'var(--md-callout-danger-border)' },
+  success:   { bg: 'var(--md-callout-success-bg)', border: 'var(--md-callout-success-border)' },
 }
 
+const normalizedType = computed(() => (props.type ?? 'info').toLowerCase())
+
 const calloutStyle = computed(() => {
-  const t = (props.type ?? 'info').toLowerCase()
-  const m: CalloutStyle = typeMap[t] ?? DEFAULT_STYLE
+  const m: CalloutStyle = typeMap[normalizedType.value] ?? DEFAULT_STYLE
   return {
     '--callout-bg': m.bg,
     '--callout-border': m.border,
   }
 })
 
-const calloutIcon = computed(() => {
-  const t = (props.type ?? 'info').toLowerCase()
-  return (typeMap[t] ?? DEFAULT_STYLE).icon
+const calloutIconComponent = computed(() => {
+  return calloutIconMap[normalizedType.value as keyof typeof calloutIconMap] ?? calloutIconMap.info
 })
 </script>
 
 <template>
   <div class="callout" :style="calloutStyle" :data-type="type">
     <div class="callout-header" @click="isOpen = !isOpen">
-      <span class="callout-icon" aria-hidden="true">{{ calloutIcon }}</span>
+      <span class="callout-icon" aria-hidden="true">
+        <component :is="calloutIconComponent" />
+      </span>
       <span class="callout-title">{{ title }}</span>
       <span class="callout-toggle" :class="{ 'is-closed': !isOpen }" aria-hidden="true">▾</span>
     </div>
@@ -55,7 +58,7 @@ const calloutIcon = computed(() => {
       <!-- ContentSlot ensures the inner markdown goes through the full render pipeline,
            not rendered as raw plain text. unwrap="p" removes the wrapping <p> from
            single-paragraph content for cleaner output. -->
-      <ContentSlot :use="$slots.default" unwrap="p" />
+      <MDCSlot :use="$slots.default" unwrap="p" />
     </div>
   </div>
 </template>
@@ -79,8 +82,15 @@ const calloutIcon = computed(() => {
 }
 
 .callout-icon {
-  font-size: 1rem;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--callout-border);
+}
+
+.callout-icon :deep(svg) {
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .callout-title {
