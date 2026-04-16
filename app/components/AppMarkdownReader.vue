@@ -2,6 +2,7 @@
 // ✅ 不再依赖 ContentPage
 interface MarkdownPage {
   title?: string
+  description?: string
   body?: {
     toc?: {
       links?: any[]
@@ -48,6 +49,12 @@ const isDev = import.meta.dev
     <!-- content -->
     <div v-else class="markdown-container">
       <div class="app-markdown-reader">
+        <header v-if="props.page.title" class="markdown-header">
+          <h1 class="markdown-title">{{ props.page.title }}</h1>
+          <p v-if="props.page.description" class="markdown-description">
+            {{ props.page.description }}
+          </p>
+        </header>
         <ContentRenderer :value="props.page" />
       </div>
     </div>
