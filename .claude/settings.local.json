@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Read(//e/MyBlog//**)",
-      "Read(//e//**)"
+      "Read(//e//**)",
+      "Bash(npx nuxi *)",
+      "Bash(npx vitest *)",
+      "Bash(curl -s http://localhost:3000)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl -s http://localhost:3000/post/test-callout)",
+      "Bash(curl -s http://localhost:3000/post/blog-settings/features)",
+      "Bash(taskkill //F //IM \"node.exe\")"
     ]
   }
 }
