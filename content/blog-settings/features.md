@@ -2,16 +2,10 @@
 kind: series
 series: blog-settings
 slug: features
-title: 功能概览
-description: 了解本博客支持的所有自定义 Markdown 功能：Callout 提示框、代码块、数学公式等。
+title: "功能概览"
+description: "了解本博客支持的所有自定义 Markdown 功能：Callout 提示框、代码块、数学公式等。"
 category: 功能
 navOrder: 1
----
-
-# Markdown 功能概览
-
-本页展示博客支持的所有自定义 Markdown 语法。每个功能均提供**语法示例**与**实际效果**对照。
-
 ---
 
 ## Callout 提示框
