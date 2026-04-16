@@ -14,9 +14,10 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         toc: {
-          depth: 3,       // include h1, h2, h3
-          searchDepth: 3, // search up to 3 levels deep for headings
+          depth: 3,       // 提取h1,h2,h3标题作为侧边进度栏
+          searchDepth: 3, // 搜索深度为3，即提取h1,h2,h3标题
         },
+        contentHeading: false, // 不提取h1标题作为文章标题
         // remark-math parses $...$ and $$...$$ syntax into math AST nodes
         remarkPlugins: { 'remark-math': {} },
         // rehype-katex renders the math nodes to HTML using KaTeX
