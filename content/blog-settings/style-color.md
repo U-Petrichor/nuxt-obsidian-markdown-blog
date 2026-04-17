@@ -1,7 +1,7 @@
 ---
 kind: series
 series: blog-settings
-slug: style
+slug: style-color
 title: 颜色
 description: 通过 CSS 变量修改页面的颜色
 category: 自定义样式
