@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     '~/assets/styles/markdown-core.css',
     '~/assets/styles/themes/light.css',
     '~/assets/styles/themes/dark.css',
-    '~/assets/styles/themes/nord.css',
     '~/assets/styles/themes/custom.css',
   ],
   content: {
