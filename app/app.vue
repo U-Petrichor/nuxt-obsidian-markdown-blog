@@ -25,11 +25,12 @@ useHead({
   script: [
     {
       key: 'theme-init',
-      // 页面加载瞬间执行：从 localStorage 读取主题，防止主题颜色闪烁
+      // 页面加载瞬间执行：从 cookie 读取主题，防止主题颜色闪烁
       innerHTML: `
         try {
-          const savedTheme = localStorage.getItem('theme-mode')
-          document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark'
+          const match = document.cookie.match(new RegExp('(^| )markdown-theme=([^;]+)'))
+          const savedTheme = match ? match[2] : 'dark'
+          document.documentElement.dataset.theme = savedTheme
         } catch {}
       `,
       tagPosition: 'head',
