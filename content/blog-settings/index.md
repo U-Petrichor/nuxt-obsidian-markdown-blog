@@ -7,10 +7,6 @@ icon: "🧩"
 isFeatured: true
 ---
 
-# 重要须知
-
-这个系列用于整理博客搭建、配置和发布流程。
-
 ## 作者及联系方式
 
 作者：Petrichor(因为没抢到名字所以都有'u'前缀)
@@ -21,5 +17,4 @@ isFeatured: true
 
 ## 开源协议
 
-- [MIT License](https://mit-license.org/)
 - [MIT License](https://mit-license.org/)
