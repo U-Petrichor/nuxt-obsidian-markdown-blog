@@ -2,10 +2,14 @@
 import faviconUrl from '~/assets/icons/favicon.ico' // 导入网站图标路径
 import fontUrl from '~/assets/fonts/ZLabsRoundPix.woff2' // 导入自定义像素字体路径
 
+// ── 站点 SEO 配置 (用户可在此修改) ──
+const siteTitle = 'Petrichor'
+const siteDescription = '采用 Nuxt 4 + Vue 3 搭建的个人博客网站'
+
 // 设置 SEO 元数据
 useSeoMeta({
-  titleTemplate: title => title ? `${title} · Petrichor` : 'Petrichor',
-  description: '采用Nuxt4+Vue3搭建的个人博客网站，高度支持客制化',
+  titleTemplate: title => title ? `${title} · ${siteTitle}` : siteTitle,
+  description: siteDescription,
 })
 
 /**
