@@ -20,13 +20,13 @@ const DEFAULT_STYLE: CalloutStyle = {
 
 const typeMap: Record<string, CalloutStyle> = {
   info:      { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)' },
-  tip:       { bg: 'var(--md-callout-success-bg)', border: 'var(--md-callout-success-border)' },
-  note:      { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)' },
+  tip:       { bg: 'var(--md-callout-tip-bg)',     border: 'var(--md-callout-tip-border)' },
+  note:      { bg: 'var(--md-callout-note-bg)',    border: 'var(--md-callout-note-border)' },
   warning:   { bg: 'var(--md-callout-warning-bg)', border: 'var(--md-callout-warning-border)' },
-  caution:   { bg: 'var(--md-callout-warning-bg)', border: 'var(--md-callout-warning-border)' },
-  important: { bg: 'var(--md-callout-info-bg)',    border: 'var(--md-callout-info-border)' },
+  caution:   { bg: 'var(--md-callout-caution-bg)', border: 'var(--md-callout-caution-border)' },
+  important: { bg: 'var(--md-callout-important-bg)', border: 'var(--md-callout-important-border)' },
   danger:    { bg: 'var(--md-callout-danger-bg)',  border: 'var(--md-callout-danger-border)' },
-  error:     { bg: 'var(--md-callout-danger-bg)',  border: 'var(--md-callout-danger-border)' },
+  error:     { bg: 'var(--md-callout-error-bg)',   border: 'var(--md-callout-error-border)' },
   success:   { bg: 'var(--md-callout-success-bg)', border: 'var(--md-callout-success-border)' },
 }
 
