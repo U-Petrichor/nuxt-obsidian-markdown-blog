@@ -4,6 +4,27 @@ import { type MarkdownTheme, themeOptions } from '~/types/theme'
 
 const route = useRoute()
 
+// ── 站点配置 (用户可在此修改) ──
+const siteTitle = 'Petrichor'
+const siteTaglines = [
+  '仍在改进……',
+  '有想法请联系我:u_petrichor@163.com'
+]
+const showTagline = true
+const taglineInterval = 5000 // 轮换间隔 (毫秒)
+
+const currentTaglineIndex = ref(0)
+let taglineTimer: ReturnType<typeof setInterval> | null = null
+
+const currentTagline = computed(() => siteTaglines[currentTaglineIndex.value])
+
+const startTaglineRotation = () => {
+  if (siteTaglines.length <= 1) return
+  taglineTimer = setInterval(() => {
+    currentTaglineIndex.value = (currentTaglineIndex.value + 1) % siteTaglines.length
+  }, taglineInterval)
+}
+
 // ✅ 使用 cookie 管理主题，确保 SSR 一致性
 const theme = useCookie<MarkdownTheme>('markdown-theme', {
   default: () => 'dark',
@@ -16,26 +37,6 @@ const navItems = [
   { label: 'TempB', to: '/temp-b' },
   { label: 'TempC', to: '/temp-c' },
 ]
-
-// Derive series key from catch-all slug param when on a /series/... route
-const seriesKey = computed(() => {
-  if (!route.path.startsWith('/series/')) return null
-  const raw = route.params.slug
-  const parts = Array.isArray(raw) ? raw : [raw]
-  return typeof parts[0] === 'string' && parts[0] ? parts[0] : null
-})
-
-// ✅ 使用新 API：getSeries
-const { data: currentSeries } = await useAsyncData(
-  () => `app-header-series-${seriesKey.value || 'none'}`,
-  async () => {
-    if (!seriesKey.value) return null
-    return await getSeries(seriesKey.value)
-  },
-  {
-    watch: [seriesKey],
-  },
-)
 
 // ✅ 首页 vs 文档页判断
 const shouldUseDocsHeader = computed(() => route.path !== '/')
@@ -75,17 +76,19 @@ watch(theme, (newTheme) => {
   applyTheme(newTheme)
 }, { immediate: true })
 
-// ✅ 主题初始化
+// ✅ 初始化
 onMounted(() => {
   if (import.meta.client) {
     applyTheme(theme.value)
     window.addEventListener('click', closeThemeMenu)
+    startTaglineRotation()
   }
 })
 
 onUnmounted(() => {
   if (import.meta.client) {
     window.removeEventListener('click', closeThemeMenu)
+    if (taglineTimer) clearInterval(taglineTimer)
   }
 })
 
@@ -109,15 +112,16 @@ const isActiveLink = (routePath: string, targetPath: string) => {
   >
     <div>
       <NuxtLink to="/" class="brand">
-        Petrichor
+        {{ siteTitle }}
       </NuxtLink>
 
-      <p class="tagline">
-        {{
-          currentSeries?.description ||
-          '首页负责建立第一印象，每个系列负责独立承载自己的内容。'
-        }}
-      </p>
+      <div v-if="showTagline" class="tagline-container">
+        <Transition name="fade-fast" mode="out-in">
+          <p :key="currentTagline" class="tagline">
+            {{ currentTagline }}
+          </p>
+        </Transition>
+      </div>
     </div>
 
     <nav class="header-nav">
@@ -190,9 +194,31 @@ const isActiveLink = (routePath: string, targetPath: string) => {
 }
 
 .tagline {
-  margin: 0.35rem 0 0;
+  margin: 0;
   color: var(--text-secondary);
   font-size: 0.95rem;
+}
+
+.tagline-container {
+  height: 1.4rem; /* 固定高度防止抖动 */
+  margin-top: 0.35rem;
+  overflow: hidden;
+}
+
+/* Tagline Transition */
+.fade-fast-enter-active,
+.fade-fast-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-fast-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-fast-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .header-nav {
