@@ -1,55 +1,62 @@
 [data-theme="custom"] {
-  /* ── Text palette (Retro Cyberpunk) ── */
-  --md-text-color: #00ff41;
-  --md-border-color: #003b00;
-  --md-link-color: #ff003c;
-  --md-strong-color: #00f0ff;
-  --md-em-color: #ffea00;
+  --md-text-color: #d7dae0;
+  --md-border-color: #2a2f3a;
+  --md-link-color: #7aa2f7;
 
-  /* ── Headings (Neon Rainbow) ── */
-  --md-h1-color: #ff003c;
-  --md-h2-color: #ffea00;
-  --md-h3-color: #00f0ff;
-  --md-h4-color: #00ff41;
-  --md-h5-color: #7000ff;
-  --md-h6-color: #ff00ff;
+  /* ── 强调 ── */
+  --md-strong-color: #c0caf5;
+  --md-em-color: #a9b1d6;
 
-  /* ── Blockquote ── */
-  --md-blockquote-border: #ff003c;
-  --md-blockquote-color: #00f0ff;
-  --md-blockquote-bg: #0d0208;
+  /* ── 标题 ── */
+  --md-h1-color: #e0af68;
+  --md-h2-color: #7aa2f7;
+  --md-h3-color: #9eceff;
+  --md-h4-color: #73daca;
+  --md-h5-color: #bb9af7;
+  --md-h6-color: #c0caf5;
 
-  /* ── Inline code ── */
-  --md-inline-code-bg: #003b00;
-  --md-inline-code-color: #00ff41;
+  /* ── 引用 ── */
+  --md-blockquote-border: #414868;
+  --md-blockquote-color: #a9b1d6;
+  --md-blockquote-bg: #16161e;
 
-  /* ── Code blocks ── */
-  --md-code-bg: #000000;
-  --md-code-color: #00ff41;
+  /* ── 内联代码 ── */
+  --md-inline-code-bg: #1e2029;
+  --md-inline-code-color: #7dcfff;
 
-  /* ── Tables ── */
-  --md-table-header-bg: #0d0208;
+  /* ── 代码块 ── */
+  --md-code-bg: #0d0f14;
+  --md-code-color: #c0caf5;
 
-  /* ── Callout palette (High Contrast) ── */
-  --md-callout-info-bg: rgba(0, 240, 255, 0.1);
-  --md-callout-info-border: #00f0ff;
-  --md-callout-note-bg: rgba(255, 234, 0, 0.1);
-  --md-callout-note-border: #ffea00;
-  --md-callout-important-bg: rgba(112, 0, 255, 0.1);
-  --md-callout-important-border: #7000ff;
+  /* ── 表格 ── */
+  --md-table-header-bg: #1a1d26;
 
-  --md-callout-tip-bg: rgba(0, 255, 65, 0.1);
-  --md-callout-tip-border: #00ff41;
-  --md-callout-success-bg: rgba(0, 255, 65, 0.15);
-  --md-callout-success-border: #00ff41;
+  /* ── 提示框颜色板 ── */
 
-  --md-callout-warning-bg: rgba(255, 234, 0, 0.15);
-  --md-callout-warning-border: #ffea00;
-  --md-callout-caution-bg: rgba(255, 122, 0, 0.15);
-  --md-callout-caution-border: #ff7a00;
+  --md-callout-info-bg: rgba(125, 207, 255, 0.08);
+  --md-callout-info-border: #7dcfff;
 
-  --md-callout-danger-bg: rgba(255, 0, 60, 0.15);
-  --md-callout-danger-border: #ff003c;
-  --md-callout-error-bg: rgba(255, 0, 255, 0.15);
-  --md-callout-error-border: #ff00ff;
+  --md-callout-note-bg: rgba(187, 154, 247, 0.08);
+  --md-callout-note-border: #bb9af7;
+
+  --md-callout-important-bg: rgba(224, 175, 104, 0.08);
+  --md-callout-important-border: #e0af68;
+
+  --md-callout-tip-bg: rgba(115, 218, 202, 0.08);
+  --md-callout-tip-border: #73daca;
+
+  --md-callout-success-bg: rgba(158, 206, 106, 0.10);
+  --md-callout-success-border: #9ece6a;
+
+  --md-callout-warning-bg: rgba(224, 175, 104, 0.10);
+  --md-callout-warning-border: #e0af68;
+
+  --md-callout-caution-bg: rgba(255, 158, 100, 0.10);
+  --md-callout-caution-border: #ff9e64;
+
+  --md-callout-danger-bg: rgba(247, 118, 142, 0.10);
+  --md-callout-danger-border: #f7768e;
+
+  --md-callout-error-bg: rgba(255, 117, 127, 0.10);
+  --md-callout-error-border: #ff757f;
 }
