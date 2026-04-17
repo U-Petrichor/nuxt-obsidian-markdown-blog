@@ -1,0 +1,55 @@
+[data-theme="custom"] {
+  /* ── Text palette (Retro Cyberpunk) ── */
+  --md-text-color: #00ff41;
+  --md-border-color: #003b00;
+  --md-link-color: #ff003c;
+  --md-strong-color: #00f0ff;
+  --md-em-color: #ffea00;
+
+  /* ── Headings (Neon Rainbow) ── */
+  --md-h1-color: #ff003c;
+  --md-h2-color: #ffea00;
+  --md-h3-color: #00f0ff;
+  --md-h4-color: #00ff41;
+  --md-h5-color: #7000ff;
+  --md-h6-color: #ff00ff;
+
+  /* ── Blockquote ── */
+  --md-blockquote-border: #ff003c;
+  --md-blockquote-color: #00f0ff;
+  --md-blockquote-bg: #0d0208;
+
+  /* ── Inline code ── */
+  --md-inline-code-bg: #003b00;
+  --md-inline-code-color: #00ff41;
+
+  /* ── Code blocks ── */
+  --md-code-bg: #000000;
+  --md-code-color: #00ff41;
+
+  /* ── Tables ── */
+  --md-table-header-bg: #0d0208;
+
+  /* ── Callout palette (High Contrast) ── */
+  --md-callout-info-bg: rgba(0, 240, 255, 0.1);
+  --md-callout-info-border: #00f0ff;
+  --md-callout-note-bg: rgba(255, 234, 0, 0.1);
+  --md-callout-note-border: #ffea00;
+  --md-callout-important-bg: rgba(112, 0, 255, 0.1);
+  --md-callout-important-border: #7000ff;
+
+  --md-callout-tip-bg: rgba(0, 255, 65, 0.1);
+  --md-callout-tip-border: #00ff41;
+  --md-callout-success-bg: rgba(0, 255, 65, 0.15);
+  --md-callout-success-border: #00ff41;
+
+  --md-callout-warning-bg: rgba(255, 234, 0, 0.15);
+  --md-callout-warning-border: #ffea00;
+  --md-callout-caution-bg: rgba(255, 122, 0, 0.15);
+  --md-callout-caution-border: #ff7a00;
+
+  --md-callout-danger-bg: rgba(255, 0, 60, 0.15);
+  --md-callout-danger-border: #ff003c;
+  --md-callout-error-bg: rgba(255, 0, 255, 0.15);
+  --md-callout-error-border: #ff00ff;
+}

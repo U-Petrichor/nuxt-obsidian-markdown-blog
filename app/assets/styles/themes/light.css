@@ -1,0 +1,55 @@
+[data-theme="light"] {
+  /* ── Text palette ── */
+  --md-text-color: #374151;
+  --md-border-color: #e5e7eb;
+  --md-link-color: #2563eb;
+  --md-strong-color: #111827;
+  --md-em-color: #6b7280;
+
+  /* ── Headings (各不相同) ── */
+  --md-h1-color: #111827;
+  --md-h2-color: #1e40af;
+  --md-h3-color: #0369a1;
+  --md-h4-color: #0e7490;
+  --md-h5-color: #0f766e;
+  --md-h6-color: #15803d;
+
+  /* ── Blockquote ── */
+  --md-blockquote-border: #d1d5db;
+  --md-blockquote-color: #4b5563;
+  --md-blockquote-bg: #f9fafb;
+
+  /* ── Inline code ── */
+  --md-inline-code-bg: #f3f4f6;
+  --md-inline-code-color: #db2777;
+
+  /* ── Code blocks ── */
+  --md-code-bg: #1f2937;
+  --md-code-color: #f9fafb;
+
+  /* ── Tables ── */
+  --md-table-header-bg: #f3f4f6;
+
+  /* ── Callout palette ── */
+  --md-callout-info-bg: #eff6ff;
+  --md-callout-info-border: #3b82f6;
+  --md-callout-note-bg: #f8fafc;
+  --md-callout-note-border: #64748b;
+  --md-callout-important-bg: #f5f3ff;
+  --md-callout-important-border: #8b5cf6;
+
+  --md-callout-tip-bg: #f0fdf4;
+  --md-callout-tip-border: #22c55e;
+  --md-callout-success-bg: #f0fdf4;
+  --md-callout-success-border: #16a34a;
+
+  --md-callout-warning-bg: #fffbeb;
+  --md-callout-warning-border: #f59e0b;
+  --md-callout-caution-bg: #fff7ed;
+  --md-callout-caution-border: #f97316;
+
+  --md-callout-danger-bg: #fef2f2;
+  --md-callout-danger-border: #ef4444;
+  --md-callout-error-bg: #fff1f2;
+  --md-callout-error-border: #e11d48;
+}
