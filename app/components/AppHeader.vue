@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getSeries } from '~/utils/series'
-import type { MarkdownTheme } from '~/types/theme'
+import { type MarkdownTheme, themeOptions } from '~/types/theme'
 
 const route = useRoute()
 
@@ -43,13 +43,6 @@ const shouldUseDocsHeader = computed(() => route.path !== '/')
 // =====================
 // 主题逻辑
 // =====================
-const themeOptions: { label: string; value: MarkdownTheme }[] = [
-  { label: '浅色', value: 'light' },
-  { label: '深色', value: 'dark' },
-  { label: '北欧', value: 'nord' },
-  { label: '自定义', value: 'custom' },
-]
-
 const isThemeMenuOpen = ref(false)
 const themeMenuRef = ref<HTMLElement | null>(null)
 
