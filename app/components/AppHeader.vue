@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { getSeries } from '~/utils/series'
+import type { MarkdownTheme } from '~/types/theme'
 
 const route = useRoute()
-const themeMode = useState<'light' | 'dark'>('theme-mode', () => 'dark')
+
+// ✅ 使用 cookie 管理主题，确保 SSR 一致性
+const theme = useCookie<MarkdownTheme>('markdown-theme', {
+  default: () => 'dark',
+  maxAge: 60 * 60 * 24 * 365,
+})
 
 const navItems = [
   { label: '首页', to: '/' },
@@ -10,17 +16,6 @@ const navItems = [
   { label: 'TempB', to: '/temp-b' },
   { label: 'TempC', to: '/temp-c' },
 ]
-
-// ✅ 主题初始化
-onMounted(() => {
-  if (import.meta.client) {
-    const savedTheme = localStorage.getItem('theme-mode')
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      themeMode.value = savedTheme
-    }
-    applyTheme(themeMode.value)
-  }
-})
 
 // Derive series key from catch-all slug param when on a /series/... route
 const seriesKey = computed(() => {
@@ -48,19 +43,57 @@ const shouldUseDocsHeader = computed(() => route.path !== '/')
 // =====================
 // 主题逻辑
 // =====================
-const applyTheme = (mode: 'light' | 'dark') => {
+const themeOptions: { label: string; value: MarkdownTheme }[] = [
+  { label: '浅色', value: 'light' },
+  { label: '深色', value: 'dark' },
+  { label: '北欧', value: 'nord' },
+  { label: '自定义', value: 'custom' },
+]
+
+const isThemeMenuOpen = ref(false)
+const themeMenuRef = ref<HTMLElement | null>(null)
+
+const applyTheme = (mode: MarkdownTheme) => {
   if (!import.meta.client) return
   document.documentElement.dataset.theme = mode
 }
 
-const toggleTheme = () => {
-  themeMode.value = themeMode.value === 'light' ? 'dark' : 'light'
+const toggleThemeMenu = (event: Event) => {
+  event.stopPropagation()
+  isThemeMenuOpen.value = !isThemeMenuOpen.value
 }
 
-watch(themeMode, (mode) => {
-  if (!import.meta.client) return
-  localStorage.setItem('theme-mode', mode)
-  applyTheme(mode)
+const selectTheme = (mode: MarkdownTheme) => {
+  theme.value = mode
+  isThemeMenuOpen.value = false
+}
+
+const closeThemeMenu = (event: MouseEvent) => {
+  if (themeMenuRef.value && !themeMenuRef.value.contains(event.target as Node)) {
+    isThemeMenuOpen.value = false
+  }
+}
+
+const currentThemeLabel = computed(() => {
+  return themeOptions.find(opt => opt.value === theme.value)?.label || '主题'
+})
+
+watch(theme, (newTheme) => {
+  applyTheme(newTheme)
+}, { immediate: true })
+
+// ✅ 主题初始化
+onMounted(() => {
+  if (import.meta.client) {
+    applyTheme(theme.value)
+    window.addEventListener('click', closeThemeMenu)
+  }
+})
+
+onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('click', closeThemeMenu)
+  }
 })
 
 // =====================
@@ -113,9 +146,26 @@ const isActiveLink = (routePath: string, targetPath: string) => {
         {{ item.label }}
       </NuxtLink>
 
-      <button class="theme-toggle" type="button" @click="toggleTheme">
-        {{ themeMode === 'light' ? '浅色' : '深色' }}
-      </button>
+      <div class="theme-dropdown" ref="themeMenuRef">
+        <button class="theme-toggle" type="button" @click="toggleThemeMenu">
+          {{ currentThemeLabel }}
+          <span class="dropdown-arrow" :class="{ 'is-active': isThemeMenuOpen }">▾</span>
+        </button>
+
+        <Transition name="fade-slide">
+          <div v-if="isThemeMenuOpen" class="theme-menu">
+            <button
+              v-for="opt in themeOptions"
+              :key="opt.value"
+              class="theme-menu-item"
+              :class="{ active: theme === opt.value }"
+              @click="selectTheme(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </Transition>
+      </div>
     </nav>
   </header>
 </template>
@@ -182,6 +232,74 @@ const isActiveLink = (routePath: string, targetPath: string) => {
   background: var(--surface-strong);
   color: var(--text-primary);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.theme-dropdown {
+  position: relative;
+}
+
+.dropdown-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.dropdown-arrow.is-active {
+  transform: rotate(180deg);
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  min-width: 120px;
+  padding: 0.5rem;
+  background: var(--surface-strong);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px var(--shadow-color);
+  z-index: 20;
+}
+
+.theme-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.85rem;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.theme-menu-item:hover {
+  background: var(--header-hover);
+  color: var(--text-primary);
+}
+
+.theme-menu-item.active {
+  background: var(--header-active-bg);
+  color: var(--header-active-text);
+}
+
+/* Transition styles */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 @media (max-width: 900px) {
