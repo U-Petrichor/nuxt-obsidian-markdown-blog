@@ -8,7 +8,11 @@ export default defineNuxtConfig({
     '~/assets/styles/global.css',
     '~/assets/styles/app.css',
     '~/assets/styles/katex.css',
-    '~/assets/styles/markdown.css',
+    '~/assets/styles/markdown-core.css',
+    '~/assets/styles/themes/light.css',
+    '~/assets/styles/themes/dark.css',
+    '~/assets/styles/themes/nord.css',
+    '~/assets/styles/themes/custom.css',
   ],
   content: {
     build: {
