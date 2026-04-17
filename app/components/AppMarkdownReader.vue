@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MarkdownTheme } from '~/types/theme'
+
 // ✅ 不再依赖 ContentPage
 interface MarkdownPage {
   title?: string
@@ -21,6 +23,12 @@ const props = withDefaults(defineProps<MarkdownReaderProps>(), {
 })
 
 const isDev = import.meta.dev
+
+// 主题状态持久化
+const theme = useCookie<MarkdownTheme>('markdown-theme', {
+  default: () => 'dark',
+  maxAge: 60 * 60 * 24 * 365, // 1 year
+})
 </script>
 
 <template>
@@ -48,7 +56,7 @@ const isDev = import.meta.dev
 
     <!-- content -->
     <div v-else class="markdown-container">
-      <div class="app-markdown-reader">
+      <div class="app-markdown-reader" :data-theme="theme">
         <header v-if="props.page.title" class="markdown-header">
           <h1 class="markdown-title">{{ props.page.title }}</h1>
           <p v-if="props.page.description" class="markdown-description">
