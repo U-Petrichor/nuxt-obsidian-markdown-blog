@@ -1,12 +1,12 @@
 [data-theme="light"] {
-  /* ── Text palette ── */
+  /* ── 文本颜色板 ── */
   --md-text-color: #374151;
   --md-border-color: #e5e7eb;
   --md-link-color: #2563eb;
   --md-strong-color: #111827;
   --md-em-color: #6b7280;
 
-  /* ── Headings (各不相同) ── */
+  /* ── 标题（各不相同） ── */
   --md-h1-color: #111827;
   --md-h2-color: #1e40af;
   --md-h3-color: #0369a1;
@@ -14,23 +14,23 @@
   --md-h5-color: #0f766e;
   --md-h6-color: #15803d;
 
-  /* ── Blockquote ── */
+  /* ── 引用块 ── */
   --md-blockquote-border: #d1d5db;
   --md-blockquote-color: #4b5563;
   --md-blockquote-bg: #f9fafb;
 
-  /* ── Inline code ── */
+  /* ── 行内代码 ── */
   --md-inline-code-bg: #f3f4f6;
   --md-inline-code-color: #db2777;
 
-  /* ── Code blocks ── */
+  /* ── 代码块 ── */
   --md-code-bg: #1f2937;
   --md-code-color: #f9fafb;
 
-  /* ── Tables ── */
+  /* ── 表格 ── */
   --md-table-header-bg: #f3f4f6;
 
-  /* ── Callout palette ── */
+  /* ── 提示框颜色板 ── */
   --md-callout-info-bg: #eff6ff;
   --md-callout-info-border: #3b82f6;
   --md-callout-note-bg: #f8fafc;
