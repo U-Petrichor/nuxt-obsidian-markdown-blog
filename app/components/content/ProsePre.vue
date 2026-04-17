@@ -48,6 +48,8 @@ const copyCode = async () => {
   margin: 1rem 0;
   border-radius: 0.5rem;
   overflow: hidden;
+  background: var(--md-code-bg);
+  color: var(--md-code-color);
 }
 
 .prose-pre-filename {
@@ -84,5 +86,7 @@ pre {
   padding: 1rem;
   overflow-x: auto;
   border-radius: 0;
+  background: transparent !important; /* 让父容器的变量背景透过来，或者直接在这里使用变量 */
+  color: inherit !important;
 }
 </style>
