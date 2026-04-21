@@ -27,7 +27,3 @@ pnpm-lock.yaml
 
 # prompt
 task.md
-
-# 忽略 content 文件夹下的所有内容，即用户文章，但是除了博客使用指南blog-settings
-content/*
-!content/blog-settings/
