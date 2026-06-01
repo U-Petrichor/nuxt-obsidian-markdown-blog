@@ -2,14 +2,21 @@
 const { articleProgress } = useArticleProgressState()
 
 const hasArticleProgress = computed(() => Boolean(articleProgress.value.links?.length))
+const isMounted = ref(false)
+
+onMounted(() => {
+  isMounted.value = true
+})
 </script>
 
 <template>
-  <aside class="right-sidebar-shell" :class="{ empty: !hasArticleProgress }">
-    <AppArticleProgress
-      :title="articleProgress.title"
-      :links="articleProgress.links"
-    />
+  <aside class="right-sidebar-shell" :class="{ empty: !isMounted || !hasArticleProgress }">
+    <ClientOnly>
+      <AppArticleProgress
+        :title="articleProgress.title"
+        :links="articleProgress.links"
+      />
+    </ClientOnly>
   </aside>
 </template>
 
