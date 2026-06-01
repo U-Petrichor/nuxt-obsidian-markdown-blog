@@ -22,7 +22,7 @@ export default defineNuxtConfig({
         },
         contentHeading: false, // 不提取h1标题作为文章标题
         // remark-math parses $...$ and $$...$$ syntax into math AST nodes
-        remarkPlugins: { 'remark-math': {} },
+        remarkPlugins: { 'remark-math': {}, 'remark-breaks': {} },
         // rehype-katex renders the math nodes to HTML using KaTeX
         rehypePlugins: { 'rehype-katex': {} },
         highlight: {
