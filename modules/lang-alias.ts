@@ -33,7 +33,7 @@ export default defineNuxtModule({
 
       const lines = file.body.split('\n')
       for (let i = 0; i < lines.length; i++) {
-        const match = lines[i].match(FENCE_OPEN)
+        const match = lines[i]!.match(FENCE_OPEN)
         if (match) {
           const langRaw = match[2]!
           if (langRaw) {
