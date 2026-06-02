@@ -35,7 +35,7 @@ export default defineNuxtModule({
       for (let i = 0; i < lines.length; i++) {
         const match = lines[i].match(FENCE_OPEN)
         if (match) {
-          const langRaw = match[2]
+          const langRaw = match[2]!
           if (langRaw) {
             const lower = langRaw.toLowerCase()
             const mapped = LANG_ALIASES[lower] || lower
