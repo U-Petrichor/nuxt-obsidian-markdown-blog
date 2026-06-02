@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     './modules/obsidian-callout.ts',
+    './modules/lang-alias.ts',
   ],
   css: [
     '~/assets/styles/global.css',
@@ -27,7 +28,12 @@ export default defineNuxtConfig({
         rehypePlugins: { 'rehype-katex': {} },
         highlight: {
           theme: 'github-dark',
-          preload: ['ts', 'js', 'vue', 'json', 'bash', 'html', 'css', 'python'],
+          preload: [
+      'ts', 'js', 'vue', 'json', 'bash', 'html', 'css', 'python',
+      'csharp', 'cpp', 'c', 'go', 'rust', 'java', 'kotlin', 'swift', 'dart', 'ruby',
+      'php', 'r', 'sql', 'graphql', 'toml', 'dockerfile', 'sass', 'scss', 'less',
+      'xml', 'regex', 'latex', 'make', 'powershell', 'diff', 'fsharp',
+    ],
         },
       },
     },
