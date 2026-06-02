@@ -147,6 +147,10 @@ const toggleCollapse = () => {
   overflow: hidden;
   background: var(--md-code-bg);
   color: var(--md-code-color);
+  --shiki-default-bg: var(--md-code-bg);
+  --shiki-default-font-style: normal;
+  --shiki-default-font-weight: normal;
+  --shiki-default-text-decoration: none;
 }
 
 .prose-pre-filename {
@@ -207,7 +211,6 @@ pre {
   overflow-x: auto;
   border-radius: 0;
   background: transparent !important;
-  color: inherit !important;
   transition: max-height 0.35s ease;
 }
 
